@@ -1,0 +1,56 @@
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return x * (1 - x)  # x is already sigmoid(x)
+
+i1, i2 = 0.05, 0.10  # Inputs
+y1, y2 = 0.01, 0.99  # Target outputs
+alpha = 0.5  # Learning rate
+
+w1, w2, w3, w4 = 0.15, 0.20, 0.25, 0.30  # Input to hidden layer
+w5, w6, w7, w8 = 0.40, 0.45, 0.50, 0.55  # Hidden to output layer
+b1, b2 = 0.35, 0.60  # Biases
+
+z_h1 = i1 * w1 + i2 * w3 + b1
+z_h2 = i1 * w2 + i2 * w4 + b1
+h1 = sigmoid(z_h1)
+h2 = sigmoid(z_h2)
+
+z_o1 = h1 * w5 + h2 * w7 + b2
+z_o2 = h1 * w6 + h2 * w8 + b2
+o1 = sigmoid(z_o1)
+o2 = sigmoid(z_o2)
+
+E1 = 0.5 * (y1 - o1) ** 2
+E2 = 0.5 * (y2 - o2) ** 2
+E_total = E1 + E2
+
+delta_o1 = (o1 - y1) * sigmoid_derivative(o1)
+delta_o2 = (o2 - y2) * sigmoid_derivative(o2)
+
+delta_h1 = (delta_o1 * w5 + delta_o2 * w7) * sigmoid_derivative(h1)
+delta_h2 = (delta_o1 * w6 + delta_o2 * w8) * sigmoid_derivative(h2)
+
+w5 -= alpha * delta_o1 * h1
+w6 -= alpha * delta_o2 * h1
+w7 -= alpha * delta_o1 * h2
+w8 -= alpha * delta_o2 * h2
+
+b2 -= alpha * (delta_o1 + delta_o2)
+
+w1 -= alpha * delta_h1 * i1
+w2 -= alpha * delta_h2 * i1
+w3 -= alpha * delta_h1 * i2
+w4 -= alpha * delta_h2 * i2
+
+b1 -= alpha * (delta_h1 + delta_h2)
+
+print("Updated Weights:")
+print(f"w1: {w1:.4f}, w2: {w2:.4f}, w3: {w3:.4f}, w4: {w4:.4f}")
+print(f"w5: {w5:.4f}, w6: {w6:.4f}, w7: {w7:.4f}, w8: {w8:.4f}")
+
+print("\nUpdated Biases:")
+print(f"b1: {b1:.4f}, b2: {b2:.4f}")
